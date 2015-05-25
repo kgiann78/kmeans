@@ -22,3 +22,17 @@ So, K’ = 4. Find the centres of each of these clusters (based on the centres o
 13. Since K’>K apply MergeDBMSDC to get three points {1}, {2,3}, {4}
 14. Clusters 2 and 3 are merged because they belong to the same set
 15. Find the mean of these 3 clusters to get final three enters that are the initial cluster centres for the k-means algorithm
+
+
+
+
+To rerun k-means:
+
+After each cluster has a final defined center, k-means is rerun so that all patterns can repositioned to where they belong.
+A list (or number) of those misplaced is created.
+
+To reposition the patterns this is done by the euclidean distance of the whole pattern to the center of the cluster:
+
+d[P(1.1, 2.2, 3.3, 4.4), C(1, 2, 3, 4)] = SQRT((1.1-1)^2 + (2.2 - 2)^2 + ...)
+
+
