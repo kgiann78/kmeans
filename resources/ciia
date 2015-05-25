@@ -1,0 +1,24 @@
+1. normalize
+2. for variable 1 to 4
+    3. calculate mean (mu) and standard deviation (sigma)
+    4. since K=3, for s=1 to 3
+        5. calculate z(s) so that area(s) is
+            area(1)=1/6,
+            area(2)=1/2,
+            area(3)=5/6
+        6. compute attribute values, x(s) = z(s)*sigma + mu
+    7. execute k-means on these variables (that means just set these variables as centres)
+    8. allocate cluster labels (1, 2 or 3) for the three variables to every pattern and compute new centres.
+    9. execute k-means on complete data set
+    10. store the class labels according to what is occurring more often
+11. after doing so for all 4 variables each pattern should have 4 labels of the most occurring clusters.
+i.e. pattern 1 - 1213
+12. find the unique strings for all patterns and that will be the number of clusters K’
+i.e cluster 1: string 1213
+    cluster 2: string 3213
+    cluster 3: string 1233
+    cluster 4: string 1323
+So, K’ = 4. Find the centres of each of these clusters (based on the centres of the patterns for each variable separately)
+13. Since K’>K apply MergeDBMSDC to get three points {1}, {2,3}, {4}
+14. Clusters 2 and 3 are merged because they belong to the same set
+15. Find the mean of these 3 clusters to get final three enters that are the initial cluster centres for the k-means algorithm
