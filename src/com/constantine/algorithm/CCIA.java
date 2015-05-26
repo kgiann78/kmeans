@@ -24,7 +24,7 @@ public class CCIA {
     private int variablesNumber;
     private Logger log = Logger.getLogger(this.getClass());
 
-    private List<double[]> initialCenters;
+    private List<Cluster> clusters;
 
     public CCIA(Properties props) {
         this.extension = new Extension();
@@ -59,7 +59,7 @@ public class CCIA {
         }
     }
 
-    public void initializeCenters() {
+    public List<Cluster> initializeCenters() {
         for (int i = 0; i < this.variablesNumber; i++) {
             double[] xs = getCenters(i);
             createPartitions(xs, i);
@@ -69,7 +69,7 @@ public class CCIA {
         //Find unique strings, K0, which is the number
         // of distinguishable clusters and K0PK.
         //       Find the center of each of these clusters
-        ArrayList<Cluster> clusters = findUniqueClusters();
+        clusters = findUniqueClusters();
 
         //  If  K0 > K, apply MergeDBMSDC algorithm.
         log.info("CLUSTERS SIZE " + this.getK() + " K' size " + clusters.size());
@@ -86,23 +86,18 @@ public class CCIA {
             // getMedianCenters(clusters);
         }
 
-        initialCenters = new ArrayList<double[]>();
-
-        for (Cluster c : clusters) {
-            initialCenters.add(c.getCenter());
-        }
-
-        log.info("Final " + initialCenters.size() + " centers are :...");
-
-        for (double[] i : initialCenters) {
-            log.info(utils.getString(i));
-
-        }
-        clusters.clear();
-
-        log.info("Now starting K-means execution...");
 
 
+        log.info("Final " + clusters.size() + " centers are :...");
+
+//        for (double[] i : finalClusters.values()) {
+//            log.info(utils.getString(i));
+//        }
+//        clusters.clear();
+
+//        log.info("Now starting K-means execution...");
+
+        return clusters;
     }
 
 

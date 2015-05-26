@@ -19,7 +19,7 @@ public class MergeDBMSDC {
     private Utils utils = new Utils();
     private int K;
 
-    public ArrayList<Cluster> merge(ArrayList<Cluster> clusters) {
+    public List<Cluster> merge(List<Cluster> clusters) {
         //Algorithm MergeDBMSDC
 
         /*

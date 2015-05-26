@@ -1,6 +1,7 @@
 package com.constantine.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -68,5 +69,16 @@ public class Cluster {
 
     public void setMembers(int members) {
         this.members = members;
+    }
+
+    @Override
+    public String toString() {
+        return "Cluster{" +
+                "label='" + label + '\'' +
+                ", center=" + Arrays.toString(center) +
+//                ", patterns=" + patterns +
+                ", members=" + members +
+                ", varNum=" + varNum +
+                '}';
     }
 }

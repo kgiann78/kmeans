@@ -1,7 +1,10 @@
 package com.constantine.algorithm;
 
+import com.constantine.model.Cluster;
 import org.apache.log4j.Logger;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -9,6 +12,8 @@ import java.util.Properties;
  */
 public class Kmeans {
     private CCIA CCIA;
+    private List<Cluster> clusters;
+
 
     private Properties properties;
     private Logger log = Logger.getLogger(this.getClass());
@@ -23,7 +28,8 @@ public class Kmeans {
         CCIA.loadPatterns();
 
         CCIA.normalize();
-        CCIA.initializeCenters();
+        clusters = CCIA.initializeCenters();
+        System.out.println(clusters);
     }
 
     public void execute() {
