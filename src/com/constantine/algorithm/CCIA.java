@@ -17,7 +17,6 @@ import java.util.*;
 public class CCIA {
     private ArrayList<Pattern> patterns;
 
-
     private Extension extension;
     private Utils utils;
     private Properties properties;

@@ -11,17 +11,16 @@ public class Cluster {
     private double[] center;
     private List<Pattern> patterns;
     private int members = 0;
-    private int attrNum;
+    private int varNum;
 
     public Cluster(String label, double[] center) {
         this.label = label;
         this.center = center;
-
     }
 
-    public Cluster(int attr) {
-        this.center = new double[attr];
-        this.attrNum = attr;
+    public Cluster(int var) {
+        this.center = new double[var];
+        this.varNum = var;
         patterns = new ArrayList<Pattern>();
     }
 
@@ -29,7 +28,6 @@ public class Cluster {
     public void addPattern(Pattern p) {
         patterns.add(p);
         members++;
-
     }
 
     public String getLabel() {
@@ -56,12 +54,12 @@ public class Cluster {
         this.patterns = patterns;
     }
 
-    public int getAttrNum() {
-        return attrNum;
+    public int getVarNum() {
+        return varNum;
     }
 
-    public void setAttrNum(int attrNum) {
-        this.attrNum = attrNum;
+    public void setVarNum(int varNum) {
+        this.varNum = varNum;
     }
 
     public int getMembers() {
