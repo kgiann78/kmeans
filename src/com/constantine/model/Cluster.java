@@ -17,6 +17,7 @@ public class Cluster {
     public Cluster(String label, double[] center) {
         this.label = label;
         this.center = center;
+        patterns = new ArrayList<Pattern>();
     }
 
     public Cluster(int var) {
@@ -76,7 +77,7 @@ public class Cluster {
         return "Cluster{" +
                 "label='" + label + '\'' +
                 ", center=" + Arrays.toString(center) +
-//                ", patterns=" + patterns +
+                ", patterns=" + patterns +
                 ", members=" + members +
                 ", varNum=" + varNum +
                 '}';

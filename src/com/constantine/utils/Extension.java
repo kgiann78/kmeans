@@ -1,5 +1,6 @@
 package com.constantine.utils;
 
+import com.constantine.model.Cluster;
 import com.constantine.model.Pattern;
 import org.apache.log4j.Logger;
 
@@ -98,8 +99,6 @@ public class Extension {
             for (int i = 1; i < k; i++) {
                 if (euclideanDistance(point, xs[i]) < dist) {
                     dist = euclideanDistance(point, xs[i]);
-
-
                     index = i;
                 }
             }

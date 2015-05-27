@@ -147,11 +147,7 @@ public class CCIA {
             if (stableCenters == xs.length) {
                 break;
             }
-
-
         }
-
-
         return partitions;
     }
 
@@ -170,8 +166,6 @@ public class CCIA {
         for (Pattern p : patterns) {
             p.normalize(min, max);
         }
-
-
     }
 
 
@@ -191,7 +185,6 @@ public class CCIA {
                 c.addPattern(p);
                 newClusters.put(p.getLabelString(), c);
                 log.info("Added new cluster for label " + p.getLabelString());
-
             }
         }
 

@@ -10,7 +10,7 @@ import java.util.Arrays;
  */
 public class Pattern {
     private int[] label;
-    private String[] variables;
+    private double[] variables;
     private long id;
     private String classname;
     private int occurences;
@@ -21,10 +21,10 @@ public class Pattern {
 
         String[] split = buff.split(delim);
 
-        variables = new String[variableIndeces.length];
+        variables = new double[variableIndeces.length];
 
         for (int i=0; i < variables.length; i++) {
-            variables[i] = split[Integer.parseInt(variableIndeces[i])];
+            variables[i] = Double.parseDouble(split[Integer.parseInt(variableIndeces[i])]);
         }
         this.classname = split[classname];
 
@@ -35,7 +35,7 @@ public class Pattern {
 
 
     public Double getAttribute(int attributeNumber) {
-        return Double.parseDouble(this.variables[attributeNumber]);
+        return this.variables[attributeNumber];
 
     }
 
@@ -46,11 +46,10 @@ public class Pattern {
 
     public void normalize(double[] min, double[] max) {
         for (int i = 0; i < variables.length; i++) {
-            if (isNumeric(variables[i])) {
-                double d_new = (Double.parseDouble(variables[i]) - min[i]) / (max[i] - min[i]);
+                double d_new = (variables[i] - min[i]) / (max[i] - min[i]);
                 //log.debug("Original value : " + variables[i] + "Normalized value: " + d_new);
-                variables[i] = String.valueOf(d_new);
-            }
+                variables[i] = d_new;
+
         }
     }
 
@@ -79,11 +78,11 @@ public class Pattern {
         this.label = label;
     }
 
-    public String[] getVariables() {
+    public double[] getVariables() {
         return variables;
     }
 
-    public void setVariables(String[] variables) {
+    public void setVariables(double[] variables) {
         this.variables = variables;
     }
 
