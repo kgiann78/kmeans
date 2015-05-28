@@ -209,28 +209,6 @@ public class CCIA {
 
     }
 
-    //TODO fill this in
-    //has to compare distance between a point and its  assigned cluster center with the distance of this point from the rest of the cluster centers
-//if there another cluster center is closer than the one we're currently assigned to , then this point is on a wrong cluster
-    public void computeError(double[] centers, int attributesNumber) {
-
-        for (Pattern p : patterns) {
-            int[] label = p.getLabel();
-
-
-           /* double assignedDist = extension.euclideanDistance(p.getAttribute(variablesNumber), Double.parseDouble(label[variablesNumber]));
-
-            for (double center : centers) {
-                if (extension.euclideanDistance(Double.parseDouble(label[variablesNumber]), center) < assignedDist) {
-                    log.warn("Point " + p.getId() + " assigned to wrong cluster! : " + extension.euclideanDistance(Double.parseDouble(label[variablesNumber]), center));
-                    ;
-                }
-            }*/
-
-
-        }
-
-    }
 
     //Computes the  median-based center of a new cluster
     public void getMedianCenters(HashMap<String, Cluster> newClusters) {

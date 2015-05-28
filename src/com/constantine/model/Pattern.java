@@ -23,7 +23,7 @@ public class Pattern {
 
         variables = new double[variableIndeces.length];
 
-        for (int i=0; i < variables.length; i++) {
+        for (int i = 0; i < variables.length; i++) {
             variables[i] = Double.parseDouble(split[Integer.parseInt(variableIndeces[i])]);
         }
         this.classname = split[classname];
@@ -46,9 +46,9 @@ public class Pattern {
 
     public void normalize(double[] min, double[] max) {
         for (int i = 0; i < variables.length; i++) {
-                double d_new = (variables[i] - min[i]) / (max[i] - min[i]);
-                //log.debug("Original value : " + variables[i] + "Normalized value: " + d_new);
-                variables[i] = d_new;
+            double d_new = (variables[i] - min[i]) / (max[i] - min[i]);
+            //log.debug("Original value : " + variables[i] + "Normalized value: " + d_new);
+            variables[i] = d_new;
 
         }
     }
@@ -65,6 +65,11 @@ public class Pattern {
     public int[] getLabel() {
         return label;
     }
+
+    public int getLabelValue(int var) {
+        return label[var];
+    }
+
 
     public String getLabelString() {
         String str = new String();
@@ -102,6 +107,14 @@ public class Pattern {
                 ", id=" + id +
                 ", classname='" + classname + '\'' +
                 '}';
+    }
+
+    public String getClassname() {
+        return classname;
+    }
+
+    public void setClassname(String classname) {
+        this.classname = classname;
     }
 
     public int getOccurences() {

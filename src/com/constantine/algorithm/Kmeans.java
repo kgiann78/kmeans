@@ -53,10 +53,8 @@ public class Kmeans {
         for (int counter = 0; counter < clusters.size(); counter++) {
 
             clusters.get(counter).getPatterns().clear();
+            clusters.get(counter).setMembers(0);
         }
-
-
-        //while (!hasFinished)
 
         int repeat = 0;
 
@@ -76,28 +74,35 @@ public class Kmeans {
             for (int counter = 0; counter < clusters.size(); counter++) {
                 finalCenters[counter] = utils.getString(clusters.get(counter).getCenter());
             }
+
+
             log.info("CLUSTER  INITIAL CENTERS: ");
             for (int counter = 0; counter < clusters.size(); counter++) {
                 log.info(initCenters[counter]);
 
             }
+
             log.info("CLUSTER FINAL  CENTERS: ");
             for (int counter = 0; counter < clusters.size(); counter++) {
                 log.info(finalCenters[counter]);
             }
 
+
             boolean allEqual = utils.compare(initCenters, finalCenters);
 
             if (allEqual) {
                 stabilizedCenters = true;
-                log.info("*****************************Centers Stabilized !!!!!!*****************************");
-                log.info("*****************************Repeats :" + repeat + " *****************************");
+                log.info("***************************** Centers Stabilized !!!!!!*****************************");
+                log.info("***************************** Repeats :" + repeat + " *****************************");
             }
 
 
             repeat++;
 
         }
+
+        computeError();
+        printLabels();
     }
 
 
@@ -112,10 +117,12 @@ public class Kmeans {
                 if (currentDist < dist) {
                     dist = currentDist;
                     index = clusters.indexOf(cluster);
+
                 }
             }
 
             pattern.addLabel(index, i);
+
         }
 
 
@@ -136,5 +143,102 @@ public class Kmeans {
         }
 
     }
+
+    //TODO fill this in
+    //has to compare distance between a point and its  assigned cluster center with the distance of this point from the rest of the cluster centers
+//if there another cluster center is closer than the one we're currently assigned to , then this point is on a wrong cluster
+
+    public void computeError() {
+        for (int j = 0; j < CCIA.getVariablesNumber(); j++) {
+            int wronglyClassifiedPatterns = 0;
+            for (Pattern pattern : patterns) {
+                int index = 0;
+
+                double dist = extension.euclideanDistance(pattern.getVariables()[j], clusters.get(0).getCenter()[j]);
+
+                for (Cluster cluster : clusters) {
+                    double currentDist = extension.euclideanDistance(pattern.getVariables()[j], cluster.getCenter()[j]);
+                    if (currentDist < dist) {
+                        dist = currentDist;
+                        index = clusters.indexOf(cluster);
+                    }
+                }
+
+                if (index == pattern.getLabelValue(j)) {
+                    //   log.info("Assigned to correct cluster");
+                } else {
+                    wronglyClassifiedPatterns++;
+                    //     log.info("Assigned to wrong cluster");
+                }
+            }
+            log.info("Wrongly classified  " + wronglyClassifiedPatterns);
+        }
+    }
+
+
+    public void printLabels() {
+
+
+        for (int j = 0; j < CCIA.getVariablesNumber(); j++) {
+
+           // for (Pattern pattern : patterns) {
+         //      // log.info(" Label " + pattern.getLabelString());
+              //  log.info(" Classname " + pattern.getClassname());
+           // }
+
+            log.info(" For Attribute " + j);
+
+            for (int k = 0; k < CCIA.getK(); k++) {
+                for (Pattern pattern : patterns) {
+                    if (pattern.getLabelValue(j) == k) {
+                        clusters.get(k).addPattern(pattern);
+                        log.info("Label " + pattern.getLabelValue(j) + "  classname  " + pattern.getClassname());
+
+                   }
+
+                }
+                log.info("\n");
+            }
+
+     /*    for (Cluster c : clusters) */{
+/*
+                log.info("Cluster Label " + c.getLabel());
+                log.info("Cluster members " + c.getMembers());
+
+                HashMap<String, Integer> diffValues = new HashMap<String, Integer>();
+
+                for (Pattern p : c.getPatterns()) {
+
+                    int count = diffValues.get(p.getClassname());
+
+                    diffValues.put(p.getClassname(), count + 1);
+
+                }
+
+                log.info("\n");*/
+
+          /*      for (Map.Entry<String, Integer> e : diffValues.entrySet()) {
+                    log.info("  Label " + e.getKey());
+                    log.info("Occurences in cluster " + e.getValue());
+
+                    log.info("\n");
+                }
+ */
+
+     }
+
+
+        for (Cluster c : clusters) {
+            c.getPatterns().clear();
+            c.setMembers(0);
+        }
+        log.info("\n");
+
+
+    }
+
+
+}
+
 }
 
