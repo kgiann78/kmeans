@@ -24,7 +24,7 @@ public class CCIA {
     private int variablesNumber;
     private Logger log = Logger.getLogger(this.getClass());
 
-    private List<Cluster> clusters;
+    private ArrayList<Cluster> clusters;
 
     public int getVariablesNumber() {
         return variablesNumber;
@@ -63,7 +63,7 @@ public class CCIA {
         }
     }
 
-    public List<Cluster> initializeCenters() {
+    public ArrayList<Cluster> initializeCenters() {
         for (int i = 0; i < this.variablesNumber; i++) {
             double[] xs = getCenters(i);
             createPartitions(xs, i);
@@ -86,20 +86,15 @@ public class CCIA {
 
             clusters = mergeDBMSDCenters.merge(clusters);
 
-            // TODO dont forget!!! Final Step! Get Median Center again
-            // getMedianCenters(clusters);
+            getMedianCenters(clusters);
         }
-
 
 
         log.info("Final " + clusters.size() + " centers are :...");
 
-//        for (double[] i : finalClusters.values()) {
-//            log.info(utils.getString(i));
-//        }
-//        clusters.clear();
-
-//        log.info("Now starting K-means execution...");
+        for (Cluster cluster : clusters) {
+            log.info(utils.getString(cluster.getCenter()));
+        }
 
         return clusters;
     }
@@ -259,6 +254,26 @@ public class CCIA {
 
     }
 
+    public void getMedianCenters(ArrayList<Cluster> newClusters) {
+        Iterator<Cluster> iterator = newClusters.iterator();
+        while (iterator.hasNext()) {
+            Cluster c = iterator.next();
+            double[] newCenters = new double[variablesNumber];
+            for (int i = 0; i < variablesNumber; i++) {
+
+                newCenters[i] = extension.calculateCenter(utils.getValues(i, c.getPatterns()));
+
+                //     log.info("calculated new center for  attribute " + i + " : " + newCenters[i]);
+
+                c.setCenter(newCenters);
+
+            }
+            log.info("New center for cluster : " + utils.getString(c.getCenter()));
+
+        }
+
+
+    }
 
     public List<Pattern> getPatterns() {
         return patterns;

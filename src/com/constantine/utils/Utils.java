@@ -68,7 +68,30 @@ public class Utils {
 
 
     }
+    public boolean compare(String[] a, String[] b) {
+        boolean[] equal = new boolean[a.length];
 
+        for (int i = 0; i < a.length; i++) {
+            if (!a[i].equals(b[i])) {
+                equal[i] = false;
+                //        log.info("Not equal " + a[i] + " \n " + b[i]);
+            } else {
+                equal[i] = true;
+                //  log.info("  equal " + a[i] + "  \n" + b[i]);
+            }
+        }
+        boolean allEqual = true;
+
+        for (int i = 0; i < equal.length; i++) {
+            if (!equal[i]) {
+                allEqual = false;
+                //   log.info("Not All equal " + allEqual);
+            }
+        }
+
+        return allEqual;
+
+    }
     public double[] getValues(int attributeNum, List<Pattern> inputPatterns) {
         double[] values = new double[inputPatterns.size()];
         int i = 0;
