@@ -26,6 +26,10 @@ public class CCIA {
 
     private List<Cluster> clusters;
 
+    public int getVariablesNumber() {
+        return variablesNumber;
+    }
+
     public CCIA(Properties props) {
         this.extension = new Extension();
         this.properties = props;

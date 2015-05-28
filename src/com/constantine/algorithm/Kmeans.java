@@ -34,62 +34,66 @@ public class Kmeans {
 
     public void execute() {
         log.info("Now ready to start executing k-means...");
-        patterns = new ArrayList<Pattern>();
-//        for (Cluster cluster : clusters) {
-//            System.out.println("CLUSTER CENTER: " + cluster.getCenter()[0]);
-//            System.out.println("TOTAL PATTERNS: " + cluster.getPatterns().size());
-//        }
+        patterns = CCIA.getPatterns();
 
-        for (Cluster cluster : clusters) {
-//            patterns.addAll(cluster.getPatterns());
-//            cluster.getPatterns().clear();
-        }
+        boolean hasFinished = false;
 
+        while (!hasFinished)
+        {
+            double[] initCenters = new double[CCIA.getVariablesNumber()];
+            double[] finalCenters = new double[CCIA.getVariablesNumber()];
 
-        for (int i = 0; i < 10; i++) {
-            for (Cluster cluster : clusters)
+            System.out.println("\nInitial");
+
+            for (Cluster cluster : clusters) {
+                initCenters = cluster.getCenter();
                 System.out.println("CLUSTER CENTER: " + cluster.getCenter()[0]);
-            calc(0);
-            kaiTwra(0);
-            System.out.println("FINALLY");
-            for (Cluster cluster : clusters)
+                cluster.getPatterns().clear();
+            }
+
+            for (int j = 0; j < CCIA.getVariablesNumber(); j++) {
+                addPattern(j);
+                kaiTwra(j);
+            }
+
+            System.out.println("\nFinal");
+            for (Cluster cluster : clusters) {
+                finalCenters = cluster.getCenter();
                 System.out.println("CLUSTER CENTER: " + cluster.getCenter()[0]);
+            }
 
-            System.out.println("\n");
-        }
 
-        System.out.println("FINALLY");
-//        for (Cluster cluster : clusters) {
-//            System.out.println("CLUSTER CENTER: " + cluster.getCenter()[0]);
-//            System.out.println("TOTAL PATTERNS: " + cluster.getPatterns().size());
-//            for (Pattern pattern : cluster.getPatterns())
-//                System.out.println(pattern.getLabelString());
-//        }
-    }
-
-    public void calc(int i) {
-        Extension extension = new Extension();
-
-        for (Cluster cluster1 : clusters) {
-            for (Pattern pattern : cluster1.getPatterns()) {
-                int index = 0;
-                double dist = extension.euclideanDistance(pattern.getVariables()[i], clusters.get(0).getCenter()[i]);
-                for (Cluster cluster : clusters) {
-                    double currentDist = extension.euclideanDistance(pattern.getVariables()[i], cluster.getCenter()[i]);
-                    if (currentDist < dist)
-                        index = clusters.indexOf(cluster);
-                }
-                pattern.addLabel(index, i);
+            for (int i=0; i < finalCenters.length; i++) {
+                System.out.println("Init center at " + i + " variable: " + initCenters[i]);
+                System.out.println("final center at " + i + " variable: " + finalCenters[i]);
+                if (finalCenters[i] != initCenters[i])
+                    hasFinished = false;
+                else hasFinished = true;
             }
         }
     }
 
-    public void kaiTwra(int i) {
+    public void addPattern(int i) {
         Extension extension = new Extension();
 
-        for (Cluster cluster : clusters) {
-            patterns.addAll(cluster.getPatterns());
+
+        for (Pattern pattern : patterns) {
+            int index = 0;
+
+            double dist = extension.euclideanDistance(pattern.getVariables()[i], clusters.get(0).getCenter()[i]);
+            for (Cluster cluster : clusters) {
+                double currentDist = extension.euclideanDistance(pattern.getVariables()[i], cluster.getCenter()[i]);
+                if (currentDist < dist)
+                    index = clusters.indexOf(cluster);
+            }
+
+            pattern.addLabel(index, i);
         }
+
+    }
+
+    public void kaiTwra(int i) {
+        Extension extension = new Extension();
 
 
         for (int k = 0; k < CCIA.getK(); k++) {
