@@ -74,26 +74,25 @@ public class CCIA {
         // of distinguishable clusters and K0PK.
         //       Find the center of each of these clusters
         clusters = findUniqueClusters();
-
+        log.debug("\n");
         //  If  K0 > K, apply MergeDBMSDC algorithm.
-        log.info("CLUSTERS SIZE " + this.getK() + " K' size " + clusters.size());
+        log.info(" Expected  K = " + this.getK() + " but the initialization algorithm generated  K'= " + clusters.size() + " clusters.");
 
+        
         if (clusters.size() > this.getK()) {
-            log.info("K' > K.  Calculating  centers for K' clusters...");
-
+            log.info("K' > K. Running Merge Centers DBMSDC Algorithm ...");
             MergeDBMSDC mergeDBMSDCenters = new MergeDBMSDC();
             mergeDBMSDCenters.setK(this.getK());
-
             clusters = mergeDBMSDCenters.merge(clusters);
-
             getMedianCenters(clusters);
         }
 
+        log.debug("\n");
 
-        log.info("Final " + clusters.size() + " centers are :...");
+        log.info("Final cluster centers after merging are  : ");
 
         for (Cluster cluster : clusters) {
-            log.info(utils.getString(cluster.getCenter()));
+            log.info(utils.printString(cluster.getCenter()));
         }
 
         return clusters;
