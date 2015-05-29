@@ -45,6 +45,19 @@ public class Utils {
         return str;
     }
 
+
+    public String printString(double[] data) {
+        String str = "[ ";
+
+        for (double s : data) {
+            str += s + " , ";
+
+        }
+        str += "]";
+        str = str.replace(", ]", "]");
+        return str;
+    }
+
     public void get_min_max(double[] min, double max[], List<Pattern> patterns) {
         int attrNum = max.length;
 
@@ -68,6 +81,7 @@ public class Utils {
 
 
     }
+
     public boolean compare(String[] a, String[] b) {
         boolean[] equal = new boolean[a.length];
 
@@ -92,6 +106,7 @@ public class Utils {
         return allEqual;
 
     }
+
     public double[] getValues(int attributeNum, List<Pattern> inputPatterns) {
         double[] values = new double[inputPatterns.size()];
         int i = 0;
@@ -120,4 +135,6 @@ public class Utils {
             } // returning 0 would merge keys
         }
     }
+
+
 }

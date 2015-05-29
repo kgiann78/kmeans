@@ -32,6 +32,12 @@ public class Cluster {
         members++;
     }
 
+    public void clear() {
+        this.getPatterns().clear();
+        this.setMembers(0);
+
+    }
+
     public String getLabel() {
         return label;
     }

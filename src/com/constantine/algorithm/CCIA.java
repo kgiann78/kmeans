@@ -225,7 +225,7 @@ public class CCIA {
 
                 newClusters.put(c.getKey(), c.getValue());
             }
-            log.info("New center for cluster : " + utils.getString(c.getValue().getCenter()));
+         //  log.info("New center for cluster : " + utils.getString(c.getValue().getCenter()));
 
         }
 
@@ -253,7 +253,7 @@ public class CCIA {
 
     }
 
-    public List<Pattern> getPatterns() {
+    public ArrayList<Pattern> getPatterns() {
         return patterns;
     }
 
