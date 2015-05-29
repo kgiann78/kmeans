@@ -21,11 +21,11 @@ public class Stats {
     public void printLabels(ArrayList<Cluster> clusters, ArrayList<Pattern> patterns) {
         log.info("\n");
 
-        log.info("*************************************************");
+        log.info("*************************************************************************************");
 
-        log.info("****************STATISTICS***********************");
+        log.info("**********************************STATISTICS****************************************");
 
-        log.info("*************************************************");
+        log.info("*************************************************************************************");
         log.info("\n");
         log.info("Final Cluster Centers : ");
 
@@ -37,7 +37,7 @@ public class Stats {
             cluster.clear();
         }
 
-
+        log.info("\n");
         for (int j = 0; j < varNumber; j++) {
 
 

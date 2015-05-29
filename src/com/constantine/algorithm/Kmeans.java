@@ -29,7 +29,7 @@ public class Kmeans {
         extension = new Extension();
         extension = new Extension();
         utils = new Utils();
-        stats = new Stats( );
+        stats = new Stats();
 
     }
 
@@ -77,25 +77,41 @@ public class Kmeans {
                 finalCenters[counter] = utils.getString(clusters.get(counter).getCenter());
             }
 
+            log.info("\n ");
+            log.info("Running K-means for centers: ");
 
-            log.info("CLUSTER  INITIAL CENTERS: ");
             for (int counter = 0; counter < clusters.size(); counter++) {
-                log.info(initCenters[counter]);
+                log.info("[" + initCenters[counter] + "]");
 
             }
 
-            log.info("CLUSTER FINAL  CENTERS: ");
-            for (int counter = 0; counter < clusters.size(); counter++) {
-                log.info(finalCenters[counter]);
-            }
+            //    log.info("CLUSTER FINAL  CENTERS: ");
+            //  for (int counter = 0; counter < clusters.size(); counter++) {
+
+            //    log.info("[" + finalCenters[counter] + "]");
+
+//            }
 
 
             boolean allEqual = utils.compare(initCenters, finalCenters);
 
             if (allEqual) {
+
                 stabilizedCenters = true;
-                log.info("***************************** Centers Stabilized !!!!!!*****************************");
-                log.info("***************************** Repeats :" + repeat + " *****************************");
+                log.info("\n");
+                log.info("*************************************************************************************");
+                log.info("*********************************  FINISHED  ****************************************");
+                log.info("*************************************************************************************");
+                log.info("\n");
+                log.info(" Centers Stabilized  after " + repeat + " repeats  at");
+
+
+                for (int counter = 0; counter < clusters.size(); counter++) {
+
+                    log.info("[" + finalCenters[counter] + "]");
+
+                }
+
             }
 
 
@@ -103,7 +119,7 @@ public class Kmeans {
 
         }
 
-        stats.computeError(clusters, patterns);
+//        stats.computeError(clusters, patterns);
         stats.printLabels(clusters, patterns);
     }
 

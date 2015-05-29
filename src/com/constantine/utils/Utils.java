@@ -58,6 +58,18 @@ public class Utils {
         return str;
     }
 
+    public String printString(int[] data) {
+        String str = "[ ";
+
+        for (int s : data) {
+            str += s + " , ";
+
+        }
+        str += "]";
+        str = str.replace(", ]", "]");
+        return str;
+    }
+
     public void get_min_max(double[] min, double max[], List<Pattern> patterns) {
         int attrNum = max.length;
 

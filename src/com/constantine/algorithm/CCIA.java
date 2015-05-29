@@ -169,7 +169,7 @@ public class CCIA {
 
 
     public ArrayList<Cluster> findUniqueClusters() {
-
+        log.info("Finding Unique Labels for processed Pattens..");
         HashMap<String, Cluster> newClusters = new HashMap<String, Cluster>();
         //assign patterns to new clusters
         for (Pattern p : patterns) {
@@ -183,10 +183,10 @@ public class CCIA {
                 c.setLabel(p.getLabelString());
                 c.addPattern(p);
                 newClusters.put(p.getLabelString(), c);
-                log.info("Added new cluster for label " + p.getLabelString());
+                // log.info("Added new cluster for label " + p.getLabelString());
             }
         }
-
+        log.info("\n");
 
         log.info("K' clusters from unique labels: " + newClusters.size() + "  while K is " + this.getK());
 
@@ -225,7 +225,7 @@ public class CCIA {
 
                 newClusters.put(c.getKey(), c.getValue());
             }
-         //  log.info("New center for cluster : " + utils.getString(c.getValue().getCenter()));
+            //  log.info("New center for cluster : " + utils.getString(c.getValue().getCenter()));
 
         }
 
