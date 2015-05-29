@@ -78,7 +78,7 @@ public class CCIA {
         //  If  K0 > K, apply MergeDBMSDC algorithm.
         log.info(" Expected  K = " + this.getK() + " but the initialization algorithm generated  K'= " + clusters.size() + " clusters.");
 
-        
+
         if (clusters.size() > this.getK()) {
             log.info("K' > K. Running Merge Centers DBMSDC Algorithm ...");
             MergeDBMSDC mergeDBMSDCenters = new MergeDBMSDC();
