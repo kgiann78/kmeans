@@ -15,10 +15,10 @@ import java.util.Properties;
  */
 public class Kmeans {
     private CCIA CCIA;
-    private List<Cluster> clusters;
-    private List<Pattern> patterns;
+    private ArrayList<Cluster> clusters;
+    private ArrayList<Pattern> patterns;
     private Utils utils;
-
+    private Stats stats;
     private Extension extension;
 
     private Properties properties;
@@ -29,6 +29,8 @@ public class Kmeans {
         extension = new Extension();
         extension = new Extension();
         utils = new Utils();
+        stats = new Stats();
+
     }
 
     public void initializeCenters() throws Exception {
@@ -75,25 +77,41 @@ public class Kmeans {
                 finalCenters[counter] = utils.getString(clusters.get(counter).getCenter());
             }
 
+            log.info("\n ");
+            log.info("Running K-means for centers: ");
 
-            log.info("CLUSTER  INITIAL CENTERS: ");
             for (int counter = 0; counter < clusters.size(); counter++) {
-                log.info(initCenters[counter]);
+                log.info("[" + initCenters[counter] + "]");
 
             }
 
-            log.info("CLUSTER FINAL  CENTERS: ");
-            for (int counter = 0; counter < clusters.size(); counter++) {
-                log.info(finalCenters[counter]);
-            }
+            //    log.info("CLUSTER FINAL  CENTERS: ");
+            //  for (int counter = 0; counter < clusters.size(); counter++) {
+
+            //    log.info("[" + finalCenters[counter] + "]");
+
+//            }
 
 
             boolean allEqual = utils.compare(initCenters, finalCenters);
 
             if (allEqual) {
+
                 stabilizedCenters = true;
-                log.info("***************************** Centers Stabilized !!!!!!*****************************");
-                log.info("***************************** Repeats :" + repeat + " *****************************");
+                log.info("\n");
+                log.info("*************************************************************************************");
+                log.info("*********************************  FINISHED  ****************************************");
+                log.info("*************************************************************************************");
+                log.info("\n");
+                log.info(" Centers Stabilized  after " + repeat + " repeats  at");
+
+
+                for (int counter = 0; counter < clusters.size(); counter++) {
+
+                    log.info("[" + finalCenters[counter] + "]");
+
+                }
+
             }
 
 
@@ -101,8 +119,8 @@ public class Kmeans {
 
         }
 
-        computeError();
-        printLabels();
+//        stats.computeError(clusters, patterns);
+        stats.printLabels(clusters, patterns);
     }
 
 
@@ -144,101 +162,6 @@ public class Kmeans {
 
     }
 
-    //TODO fill this in
-    //has to compare distance between a point and its  assigned cluster center with the distance of this point from the rest of the cluster centers
-//if there another cluster center is closer than the one we're currently assigned to , then this point is on a wrong cluster
-
-    public void computeError() {
-        for (int j = 0; j < CCIA.getVariablesNumber(); j++) {
-            int wronglyClassifiedPatterns = 0;
-            for (Pattern pattern : patterns) {
-                int index = 0;
-
-                double dist = extension.euclideanDistance(pattern.getVariables()[j], clusters.get(0).getCenter()[j]);
-
-                for (Cluster cluster : clusters) {
-                    double currentDist = extension.euclideanDistance(pattern.getVariables()[j], cluster.getCenter()[j]);
-                    if (currentDist < dist) {
-                        dist = currentDist;
-                        index = clusters.indexOf(cluster);
-                    }
-                }
-
-                if (index == pattern.getLabelValue(j)) {
-                    //   log.info("Assigned to correct cluster");
-                } else {
-                    wronglyClassifiedPatterns++;
-                    //     log.info("Assigned to wrong cluster");
-                }
-            }
-            log.info("Wrongly classified  " + wronglyClassifiedPatterns);
-        }
-    }
-
-
-    public void printLabels() {
-
-
-        for (int j = 0; j < CCIA.getVariablesNumber(); j++) {
-
-           // for (Pattern pattern : patterns) {
-         //      // log.info(" Label " + pattern.getLabelString());
-              //  log.info(" Classname " + pattern.getClassname());
-           // }
-
-            log.info(" For Attribute " + j);
-
-            for (int k = 0; k < CCIA.getK(); k++) {
-                for (Pattern pattern : patterns) {
-                    if (pattern.getLabelValue(j) == k) {
-                        clusters.get(k).addPattern(pattern);
-                        log.info("Label " + pattern.getLabelValue(j) + "  classname  " + pattern.getClassname());
-
-                   }
-
-                }
-                log.info("\n");
-            }
-
-     /*    for (Cluster c : clusters) */{
-/*
-                log.info("Cluster Label " + c.getLabel());
-                log.info("Cluster members " + c.getMembers());
-
-                HashMap<String, Integer> diffValues = new HashMap<String, Integer>();
-
-                for (Pattern p : c.getPatterns()) {
-
-                    int count = diffValues.get(p.getClassname());
-
-                    diffValues.put(p.getClassname(), count + 1);
-
-                }
-
-                log.info("\n");*/
-
-          /*      for (Map.Entry<String, Integer> e : diffValues.entrySet()) {
-                    log.info("  Label " + e.getKey());
-                    log.info("Occurences in cluster " + e.getValue());
-
-                    log.info("\n");
-                }
- */
-
-     }
-
-
-        for (Cluster c : clusters) {
-            c.getPatterns().clear();
-            c.setMembers(0);
-        }
-        log.info("\n");
-
-
-    }
-
-
-}
 
 }
 
