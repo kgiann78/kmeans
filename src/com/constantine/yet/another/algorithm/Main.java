@@ -51,8 +51,8 @@ public class Main {
         double[] max = new double[size];
 
         for (int i = 0; i < size; i++) {
-            min[i] = 1.0e10;
-            max[i] = 0.0;
+            min[i] = patterns.get(1).getValue(i);
+            max[i] = patterns.get(1).getValue(i);
         }
 
         for (Pattern p : patterns) {
@@ -64,8 +64,15 @@ public class Main {
 
         for (Pattern p : patterns) {
             for (int i = 0; i < size; i++) {
-                double d_new = (p.getValue(i) - min[i]) / (max[i] - min[i]);
-//                System.out.println("Original value : " + p.getValue(i) + " Normalized value: " + d_new);
+                double d_new;
+                if (p.getValue(i) - min[i] == 0) {
+
+                    if (min[i] > (max[i] - min[i]))
+                        d_new = min[i] / max[i];
+                    else
+                        d_new = min[i] / (max[i] - min[i]);
+                } else
+                    d_new = (p.getValue(i) - min[i]) / (max[i] - min[i]);
                 p.setValue(i, d_new);
             }
         }
@@ -93,6 +100,8 @@ public class Main {
         for (Cluster cluster : clusters)
             log.info(cluster);
 
+        log.info("Running kmeans...");
+
         kmeans();
 
         log.info("initialized clusters...");
@@ -103,23 +112,39 @@ public class Main {
         System.out.println("Number of new clusters based on the StringPattern: " + nclusters.size());
     }
 
-    private void kmeans() {
+    /***
+     * The mian kmeans algorithm that uses Main's collections of Patterns and Clusters
+     */
+    private void kmeans() { //Pattern pattern
         int stabilized = 0;
         double[][] initialCenters = new double[size][k];
         double[] center = new double[k];
+
+        /*
+        Initialize centers that will be used to the algorithm from the current clusters.
+        A double array (double[size of cluster][number of clusters]) structure is used to hold all the centers of the clusters
+        Another more convenient double array (double[number of clusters]) structure is used to hold the ith center of all clusters
+         */
         for (int i = 0; i < size; i++)
             for (int j = 0; j < k; j++) {
                 initialCenters[i][j] = clusters[j].getCenter()[i];
             }
 
+        /*
+        While not stabilized,
+        1. set as the value of the cluster the new value produced from the cluster itself and the pattern's ith value
+        2. set the same value to the center[j]
+        3.
+
+         */
         while (stabilized < size) {
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < k; j++) {
-                    for (Pattern pattern : patterns) {
-                        pattern.arrangeAttribute(initialCenters[i], i);
+            for (Pattern pattern : patterns) {
+                for (int i = 0; i < size; i++) {
+                    for (int j = 0; j < k; j++) {
+                        pattern.arrangePattern(initialCenters[i], i);
                         if (pattern.getCluster(i) == j) {
-                            clusters[j].setCenter(i, (clusters[j].getCenter()[i] + pattern.getValue(i)) / 2);
                             center[j] = (clusters[j].getCenter()[i] + pattern.getValue(i)) / 2;
+                            clusters[j].setCenter(i, center[j]);
                         }
                     }
                 }
@@ -134,6 +159,7 @@ public class Main {
                 }
             }
         }
+
     }
 
     public List<Cluster> createNewClusters() {
@@ -141,8 +167,9 @@ public class Main {
         int count = 0;
         for (Pattern pattern : patterns) {
             if (!newClusters.containsKey(Arrays.toString(pattern.getStringPattern()))) {
+//                System.out.println("\nPattern: " + Arrays.toString(pattern.getAttributes()));
                 Cluster cluster = new Cluster(count, pattern.getSize());
-                cluster.setCenter(pattern.getValues());
+                cluster.setCenter(pattern.getAttributes());
                 newClusters.put(Arrays.toString(pattern.getStringPattern()), cluster);
                 count++;
             } else {
@@ -187,7 +214,7 @@ public class Main {
                 try {
                     pattern.setValue(i, Double.parseDouble(attributes[Integer.parseInt(attributesPosition[i])]));
                 } catch (java.lang.NumberFormatException ex) {
-                    System.out.println(ex);
+                    System.out.println(ex.getMessage());
                     System.out.println(Arrays.toString(attributes));
                 }
             }
