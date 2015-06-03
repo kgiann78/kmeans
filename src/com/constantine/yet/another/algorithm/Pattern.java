@@ -10,40 +10,39 @@ import java.util.Arrays;
  */
 public class Pattern {
     private Logger log = Logger.getLogger(this.getClass());
-    int[] stringPattern;
-    Attribute[] attribute;
-    int size = 0;
-    String classname;
+    private int[] stringPattern;
+    private Attribute[] attributes;
+    private int size = 0;
+    private String classname;
 
-    public Pattern(Attribute[] attribute) {
-        this.attribute = attribute;
-        this.size = attribute.length;
+    public Pattern(Attribute[] attributes) {
+        this.attributes = attributes;
+        this.size = attributes.length;
         this.stringPattern = new int[size];
     }
 
     public Pattern(int size) {
         this.size = size;
         this.stringPattern = new int[size];
-        this.attribute = new Attribute[size];
+        this.attributes = new Attribute[size];
         for (int i = 0; i < size; i++) {
-            this.attribute[i] = new Attribute();
+            this.attributes[i] = new Attribute();
         }
     }
 
     public void arrangeAttribute(double[] xs, int pos) {
-        Attribute attribute = this.attribute[pos];
+        Attribute attribute = this.attributes[pos];
         Extension extension = new Extension();
-        double distance = extension.euclideanDistance(xs[0], attribute.getData());
+        double distance = extension.euclideanDistance(xs[0], attribute.getValue());
         int index = 0;
         for (int i = 1; i < xs.length; i++) {
-            if (distance > extension.euclideanDistance(xs[i], attribute.getData())) {
-                distance = extension.euclideanDistance(xs[i], attribute.getData());
+            if (distance > extension.euclideanDistance(xs[i], attribute.getValue())) {
+                distance = extension.euclideanDistance(xs[i], attribute.getValue());
                 index = i;
             }
         }
 
-        attribute.setCluster(index);
-        this.stringPattern[pos] = index;
+        setCluster(pos, index);
     }
 
     public int[] getStringPattern() {
@@ -51,7 +50,7 @@ public class Pattern {
     }
 
     public int getCluster(int pos) {
-        return attribute[pos].getCluster();
+        return attributes[pos].getCluster();
     }
 
     public void setStringPattern(int[] stringPattern) {
@@ -59,23 +58,27 @@ public class Pattern {
     }
 
     public void setCluster(int pos, int cluster) {
-        this.attribute[pos].setCluster(cluster);
+        this.attributes[pos].setCluster(cluster);
+        this.stringPattern[pos] = cluster;
     }
 
-    public Attribute[] getAttribute() {
-        return attribute;
+    public Attribute[] getAttributes() {
+        return attributes;
     }
 
-    public double getData(int pos) {
-        return attribute[pos].getData();
+    public double getValue(int pos) {
+        return attributes[pos].getValue();
     }
 
-    public void setAttribute(Attribute[] attribute) {
-        this.attribute = attribute;
+    public void setAttributes(Attribute[] attributes) {
+        this.attributes = attributes;
+        for (int i = 0; i < size; i++) {
+            this.stringPattern[i] = attributes[i].getCluster();
+        }
     }
 
-    public void setData(int pos, double data) {
-        this.attribute[pos].setData(data);
+    public void setValue(int pos, double data) {
+        this.attributes[pos].setValue(data);
     }
 
     public int getSize() {
@@ -97,7 +100,7 @@ public class Pattern {
     public double[] getValues() {
         double[] values = new double[size];
         for (int i = 0; i < size; i++) {
-            values[i] = this.getData(i);
+            values[i] = this.getValue(i);
         }
         return values;
     }
@@ -106,7 +109,7 @@ public class Pattern {
     public String toString() {
         return "Pattern{" +
                 "stringPattern=" + Arrays.toString(stringPattern) +
-                ", attribute=" + Arrays.toString(attribute) +
+                ", attributes=" + Arrays.toString(attributes) +
                 ", size=" + size +
                 ", classname='" + classname + '\'' +
                 '}';

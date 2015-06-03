@@ -4,22 +4,22 @@ package com.constantine.yet.another.algorithm;
  * Created by constantine on 5/31/15.
  */
 public class Attribute {
-    double data = 0.0;
-    int cluster = 0;
+    private double value = 0.0;
+    private int cluster = 0;
 
     public Attribute() {
     }
 
-    public Attribute(double data) {
-        this.data = data;
+    public Attribute(double value) {
+        this.value = value;
     }
 
-    public double getData() {
-        return data;
+    public double getValue() {
+        return value;
     }
 
-    public void setData(double data) {
-        this.data = data;
+    public void setValue(double value) {
+        this.value = value;
     }
 
     public int getCluster() {
@@ -33,7 +33,7 @@ public class Attribute {
     @Override
     public String toString() {
         return "Attribute{" +
-                "data=" + data +
+                "value=" + value +
                 ", cluster=" + cluster +
                 '}';
     }

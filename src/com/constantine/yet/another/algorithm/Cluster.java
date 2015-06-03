@@ -11,9 +11,9 @@ import java.util.Arrays;
  */
 public class Cluster {
     private Logger log = Logger.getLogger(this.getClass());
-    int label = 0;
-    double[] center;
-    int size = 0;
+    private int label = 0;
+    private double[] center;
+    private int size = 0;
 
     public Cluster(int label, int size) {
         this.label = label;
@@ -57,9 +57,8 @@ public class Cluster {
     @Override
     public String toString() {
         return "Cluster{" +
-                "label=" + label +
-                ", center=" + Arrays.toString(center) +
-                ", size=" + size +
-                '}';
+                label +
+                ": " + Arrays.toString(center) +
+                "}";
     }
 }
