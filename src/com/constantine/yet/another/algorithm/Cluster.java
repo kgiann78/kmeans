@@ -38,6 +38,9 @@ public class Cluster {
         return center;
     }
 
+    public double getCenter(int pos) {
+        return center[pos];
+    }
     public void setCenter(double[] center) {
         this.center = center;
     }

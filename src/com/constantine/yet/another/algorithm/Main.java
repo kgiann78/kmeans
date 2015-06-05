@@ -31,7 +31,10 @@ public class Main {
             String[] attributesPosition = properties.getProperty("attributes").split(",");
 
             int classnamePosition = Integer.parseInt(properties.getProperty("classname"));
-            main.setK(Integer.parseInt(properties.getProperty("K")));
+            if (!properties.getProperty("K").isEmpty())
+                main.setK(Integer.parseInt(properties.getProperty("K")));
+            else
+                main.setK(0);
 
             main.setSize(attributesPosition.length);
             main.loadPatterns(file, delimeter, attributesPosition, classnamePosition);
@@ -101,65 +104,66 @@ public class Main {
             log.info(cluster);
 
         log.info("Running kmeans...");
-
         kmeans();
 
         log.info("initialized clusters...");
         for (Cluster cluster : clusters)
             log.info(cluster);
 
-        List<Cluster> nclusters = createNewClusters();
-        System.out.println("Number of new clusters based on the StringPattern: " + nclusters.size());
+        System.out.println("Cluster dissimilarities:");
+        for (int i = 0; i < size; i++) {
+            System.out.println("Attribute " + i);
+            System.out.println("Average Dissimilarity");
+            System.out.println(KDefinition.averageDissimilarity(clusters[0], patterns, i));
+            System.out.println("Lowest Average Dissimilarity");
+            System.out.println(KDefinition.lowestAverageDissimilarity(clusters, patterns, i));
+            System.out.println("Silhouette");
+            System.out.println(KDefinition.silhouette(clusters, patterns, i, 0));
+        }
+
+//        List<Cluster> nclusters = createNewClusters();
+//        System.out.println("Number of new clusters based on the StringPattern: " + nclusters.size());
     }
 
     /***
-     * The mian kmeans algorithm that uses Main's collections of Patterns and Clusters
+     * The kmeans algorithm that uses Patterns and Clusters <br>
+     * 1. For each Pattern find the closest cluster<br>
+     * 2. Add the ith value of the Pattern and find the new mean from the closest cluster's ith center<br>
+     * 3. Set the new mean as the new ith center of the cluster<br>
+     * 4. If the new center is equal to the old one then stop the process, else continue until everything is stabilized<br>
      */
-    private void kmeans() { //Pattern pattern
-        int stabilized = 0;
-        double[][] initialCenters = new double[size][k];
+    private void kmeans() {
+        boolean hasFinished = false;
+        //The structure to hold a set of the ith centers of the K clusters
         double[] center = new double[k];
+        //The structure to hold all initial centers
+        double[][] initcenter = new double[k][size];
 
-        /*
-        Initialize centers that will be used to the algorithm from the current clusters.
-        A double array (double[size of cluster][number of clusters]) structure is used to hold all the centers of the clusters
-        Another more convenient double array (double[number of clusters]) structure is used to hold the ith center of all clusters
-         */
-        for (int i = 0; i < size; i++)
-            for (int j = 0; j < k; j++) {
-                initialCenters[i][j] = clusters[j].getCenter()[i];
-            }
-
-        /*
-        While not stabilized,
-        1. set as the value of the cluster the new value produced from the cluster itself and the pattern's ith value
-        2. set the same value to the center[j]
-        3.
-
-         */
-        while (stabilized < size) {
-            for (Pattern pattern : patterns) {
-                for (int i = 0; i < size; i++) {
-                    for (int j = 0; j < k; j++) {
-                        pattern.arrangePattern(initialCenters[i], i);
-                        if (pattern.getCluster(i) == j) {
-                            center[j] = (clusters[j].getCenter()[i] + pattern.getValue(i)) / 2;
-                            clusters[j].setCenter(i, center[j]);
-                        }
-                    }
-                }
-            }
+        while (!hasFinished) {
+            hasFinished = true;
 
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < k; j++) {
-                    if (center[j] == initialCenters[i][j]) {
-                        stabilized++;
-                    } else
-                        initialCenters[i][j] = center[j];
+                    initcenter[j][i] = clusters[j].getCenter(i);
+                    center[j] = clusters[j].getCenter(i);
+                }
+
+                for (Pattern pattern : patterns) {
+                    // find the closest cluster for the pattern and get that clusters number
+                    int cluster = pattern.arrangePattern(center, i);
+                    // center as double[] is reusable and so we update the new ith center of the jth cluster that was rearranged
+                    center[cluster] = (center[cluster] + pattern.getValue(i)) / 2;
+                    // set the rearranged cluster's center to the value of the updated center
+                    clusters[cluster].setCenter(i, center[cluster]);
+                }
+
+                // examine if any of the old centers and the new centers are not equal
+                // if there is even one then the whole process will be repeated
+                for (int j = 0; j < k; j++) {
+                    if (initcenter[j][i] != clusters[j].getCenter(i)) hasFinished = false;
                 }
             }
         }
-
     }
 
     public List<Cluster> createNewClusters() {

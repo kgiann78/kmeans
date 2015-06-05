@@ -32,8 +32,10 @@ public class Pattern {
      * the euclidean distance from the closest cluster's center
      * @param centers the set of centers of the clusters that corresponding to the selected attribute
      * @param pos the specific attribute that is to be examined
+     *
+     * @return true if an arrangement took place, false if nothing changed
      */
-    public void arrangePattern(double[] centers, int pos) {
+    public int arrangePattern(double[] centers, int pos) {
         /*
         1. for each of the N clusters of size M select the N centers that correspond to the ith position (parameter 'pos')
         2. set the initial distance to the euclidean distance between the first center and the ith attribute.
@@ -43,14 +45,17 @@ public class Pattern {
         Extension extension = new Extension();
         double distance = extension.euclideanDistance(centers[0], getValue(pos));
         int index = 0;
-
         for (int i = 1; i < centers.length; i++) {
             if (distance > extension.euclideanDistance(centers[i], getValue(pos))) {
                 distance = extension.euclideanDistance(centers[i], getValue(pos));
                 index = i;
             }
         }
-        setCluster(pos, index);
+
+        if (getCluster(pos) != index)
+            setCluster(pos, index);
+
+        return getCluster(pos);
     }
 
     public int[] getStringPattern() {
