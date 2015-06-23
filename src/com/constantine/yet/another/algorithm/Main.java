@@ -10,9 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Created by constantine on 5/31/15.
- */
 public class Main {
     private Logger log = Logger.getLogger(this.getClass());
     List<Pattern> patterns = new ArrayList<Pattern>();
@@ -121,6 +118,21 @@ public class Main {
             System.out.println(KDefinition.silhouette(clusters, patterns, i, 0));
         }
 
+        System.out.println("\nDISTORTION FOR CLUSTER 0");
+        System.out.println(KDefinition.distortionOfCluster(clusters[0], patterns));
+        System.out.println(KDefinition.sumOfDistortions(clusters, patterns, 0));
+        System.out.println(KDefinition.evaluationFunction(clusters, patterns, 0));
+
+
+        System.out.println("\nDISTORTION FOR CLUSTER 1");
+        System.out.println(KDefinition.distortionOfCluster(clusters[1], patterns));
+        System.out.println(KDefinition.sumOfDistortions(clusters, patterns, 1));
+        System.out.println(KDefinition.evaluationFunction(clusters, patterns, 1));
+
+        System.out.println("\nDISTORTION FOR CLUSTER 2");
+        System.out.println(KDefinition.distortionOfCluster(clusters[2], patterns));
+        System.out.println(KDefinition.sumOfDistortions(clusters, patterns, 2));
+        System.out.println(KDefinition.evaluationFunction(clusters, patterns, 2));
 //        List<Cluster> nclusters = createNewClusters();
 //        System.out.println("Number of new clusters based on the StringPattern: " + nclusters.size());
     }
