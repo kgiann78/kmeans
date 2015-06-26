@@ -1,34 +1,29 @@
-package com.constantine.algorithm;
+package com.constantine.utils;
 
-import com.constantine.model.Cluster;
-import com.constantine.utils.Extension;
-import com.constantine.utils.Utils;
+
+import com.constantine.kmeans.Cluster;
 import org.apache.log4j.Logger;
 
 import java.util.*;
 
 /**
- * Created by envy17 j110ea on 24/5/2015.
+ * Created by    eri  on 24/5/2015.
  */
-public class MergeDBMSDC {
+public class MergeCenters {
 
     private Extension extension = new Extension();
-
-
     private Logger log = Logger.getLogger(this.getClass());
     private Utils utils = new Utils();
-    private int K;
 
-    public ArrayList<Cluster> merge(ArrayList<Cluster> clusters) {
+
+    public void merge(ArrayList<Cluster> clusters, int K) {
         //Algorithm MergeDBMSDC
-
-        /*
+ /*
             Compute cluster center for every K' cluster
             Let B be the set of K' cluster centers
             Choose a positive integer q and initialize
             l = 1 and repeat steps 5–10 till B  is   empty /
        */
-
 
         int kCounter = 0;
 
@@ -36,7 +31,6 @@ public class MergeDBMSDC {
 
 
         while (kCounter < K || clusters.size() > K) {
-            //    log.info(" starting over for K = " + kCounter);
 
             LinkedHashMap<Integer, ArrayList<Cluster>> mergedCenters = new LinkedHashMap<Integer, ArrayList<Cluster>>();
             int q = rand.nextInt(clusters.size() - 1) + 1;
@@ -53,12 +47,6 @@ public class MergeDBMSDC {
                 if (clusters.size() == 1) break;
 
 
-//                if (q < 1 && clusters.size() > 0) q = 1;
-                ///////
-                //   log.info("l is " + l);
-                // log.info("Cluster size " + clusters.size());
-                // log.info(" q " + q);
-
                 ArrayList<Map.Entry<String, Double>> bestBuddies = new ArrayList<Map.Entry<String, Double>>();
 
                 for (Cluster c : clusters) {
@@ -69,14 +57,13 @@ public class MergeDBMSDC {
 //calculate distance from all buddies
                     for (Cluster buddy : clusters) {
                         if (buddy.getLabel() != c.getLabel()) {
-                            buddyDistances.put(buddy.getLabel(), extension.euclideanDistance(c.getCenter(), buddy.getCenter()));
+                            buddyDistances.put(String.valueOf(buddy.getLabel()), extension.euclideanDistance(c.getCenter(), buddy.getCenter()));
                         }
                     }
 //sort buddies by nearest distance
-
                     buddyDistances = (HashMap<String, Double>) utils.sortByComparator(buddyDistances, true);
 
-                    //        log.info("cluster buddies distances " + buddyDistances.entrySet());
+                    //   log.info("cluster buddies distances " + buddyDistances.entrySet());
                     //get q-th buddy
                     int i = 1;
 
@@ -92,7 +79,7 @@ public class MergeDBMSDC {
                         i++;
                     }
 
-                    //  log.info("cluster  best buddies   " + bestBuddies);
+                    //    log.info("cluster  best buddies   " + bestBuddies);
 
                 }
 
@@ -116,8 +103,8 @@ public class MergeDBMSDC {
                     counter++;
                 }
 
-                //   log.info("min buddy among clusters:  " + minBuddy + " for  min cluster " + minCenter);
-           /*create a set S and add xj to it
+                //       log.info("min buddy among clusters:  " + minBuddy + " for  min cluster " + minCenter);
+              /*create a set S and add xj to it
 
 
             Remove all points from B that lie with in
@@ -137,10 +124,9 @@ public class MergeDBMSDC {
                 counter = 0;
                 for (Cluster c : clusters) {
                     if (counter == minCenter) {
-                        //        log.info("Selected cluster center with minimum distance from his neighbors :" + c.getLabel());
+                        //log.info("Selected cluster center with minimum distance from his neighbors :" + c.getLabel());
                         //create a set S and add xj to it
                         ArrayList<Cluster> list = new ArrayList<Cluster>();
-
                         // list.add(c);
                         mergedCenters.put(l, list);
 
@@ -155,7 +141,7 @@ public class MergeDBMSDC {
             add them to Sl.
            */
 
-                //  log.info(" \n");
+
                 Iterator it = clusters.iterator();
                 //  log.info("Calculating distance from selected cluster to other centers... :");
                 while (it.hasNext()) {
@@ -176,22 +162,14 @@ public class MergeDBMSDC {
 
                             mergedCenters.put(l, list);
                         }
-                        // log.info("Removing from initial cluster set... ");
-
                         it.remove();
                     }
-
 
                 }
 
 
-                //   log.info(" \n");
-
-                //    log.info(" Cluster list for next iteration: " + clusters.size());
-
                 for (Cluster c : clusters) {
 
-                    //   log.info(utils.getString(c.getCenter()));
 
                     if (clusters.size() == 1) {
                         ArrayList<Cluster> list = mergedCenters.get(l);
@@ -202,28 +180,14 @@ public class MergeDBMSDC {
                     }
 
                 }
-
-
                 //if only one center left, add it to merged centers and break
                 l++;
             }
-            // log.info(" \n Final Merged Centers ");
 
 
-            //   for (int o = 1; o < l; o++) {
-            //   for (Cluster mc : mergedCenters.get(o)) {
-
-            //     log.info(utils.getString(mc.getCenter()));
-
-            //  }
-            //  }
-
-
-            // clusters.clear();
             ArrayList<Cluster> newClusters = new ArrayList<Cluster>();
 
             for (ArrayList<Cluster> v : mergedCenters.values()) {
-
 
                 Iterator it3 = v.iterator();
                 while (it3.hasNext()) {
@@ -242,8 +206,16 @@ public class MergeDBMSDC {
 
         }
 
+        log.info("Final Merged Centers ");
 
-        return clusters;
+
+        for (Cluster mc : clusters) {
+
+            log.info(Arrays.toString(mc.getCenter()));
+
+        }
+
+
     }
 
     public Extension getExtension() {
@@ -270,11 +242,5 @@ public class MergeDBMSDC {
         this.utils = utils;
     }
 
-    public int getK() {
-        return K;
-    }
 
-    public void setK(int k) {
-        K = k;
-    }
 }

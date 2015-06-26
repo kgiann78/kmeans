@@ -1,7 +1,7 @@
-package com.constantine.yet.another.algorithm;
+package com.constantine.kmeans;
 
-import com.constantine.algorithm.KDefinition;
 import com.constantine.utils.Extension;
+import com.constantine.utils.MergeCenters;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
@@ -10,12 +10,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Created by constantine on 5/31/15.
+ */
 public class Main {
-    private Logger log = Logger.getLogger(this.getClass());
+    private static Logger log = Logger.getLogger("Kmeans");
     List<Pattern> patterns = new ArrayList<Pattern>();
     Cluster[] clusters;
     int size = 0;
     int k = 0;
+    private Stats stats = new Stats();
+    private MergeCenters mergeCenters = new MergeCenters();
 
     public static void main(String[] args) {
         try {
@@ -35,9 +40,21 @@ public class Main {
 
             main.setSize(attributesPosition.length);
             main.loadPatterns(file, delimeter, attributesPosition, classnamePosition);
+
+
             main.normalize();
             main.loadClusters();
             main.initialize();
+
+            log.info("Runing kmeans with CCIA centers...");
+            main.kmeans();
+
+
+            main.stats.printLabels(main.getClusters(), (ArrayList<Pattern>) main.getPatterns());
+
+            log.info("Evaluating...");
+            main.evaluate();
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,7 +62,7 @@ public class Main {
     }
 
     private void normalize() {
-        log.info("Normalizing value...");
+        log.info("Normalizing Pattern  values...");
 
         double[] min = new double[size];
         double[] max = new double[size];
@@ -75,6 +92,7 @@ public class Main {
                     d_new = (p.getValue(i) - min[i]) / (max[i] - min[i]);
                 p.setValue(i, d_new);
             }
+            //log.debug(Arrays.toString(p.getAttributes()));
         }
     }
 
@@ -95,50 +113,42 @@ public class Main {
                 clusters[j].setCenter(i, getCenters(i)[j]);
             }
         }
+        log.info("*************************************************************************************");
+
+        log.info("*******************************STARTING EXECUTION*************************************");
+
+        log.info("*************************************************************************************");
+        log.info("\n");
 
         log.info("Original clusters...");
-        for (Cluster cluster : clusters)
+        for (Cluster cluster : clusters) {
             log.info(cluster);
-
-        log.info("Running kmeans...");
+        }
+        log.info("Running kmeans to get initial centers...");
         kmeans();
 
-        log.info("initialized clusters...");
-        for (Cluster cluster : clusters)
-            log.info(cluster);
 
-        System.out.println("Cluster dissimilarities:");
-        for (int i = 0; i < size; i++) {
-            System.out.println("Attribute " + i);
-            System.out.println("Average Dissimilarity");
-            System.out.println(KDefinition.averageDissimilarity(clusters[0], patterns, i));
-            System.out.println("Lowest Average Dissimilarity");
-            System.out.println(KDefinition.lowestAverageDissimilarity(clusters, patterns, i));
-            System.out.println("Silhouette");
-            System.out.println(KDefinition.silhouette(clusters, patterns, i, 0));
+
+        for (Cluster cluster : clusters) {
+            log.info("Initial  cluster " + cluster.getLabel() + "  With Center : " + Arrays.toString(cluster.getCenter()));
         }
 
-        System.out.println("\nDISTORTION FOR CLUSTER 0");
-        System.out.println(KDefinition.distortionOfCluster(clusters[0], patterns));
-        System.out.println(KDefinition.sumOfDistortions(clusters, patterns, 0));
-        System.out.println(KDefinition.evaluationFunction(clusters, patterns, 0));
+        ArrayList<Cluster> newClusters = createUniqueClusters();
 
+        log.info("Number of new clusters based on  Unique String Patterns: " + newClusters.size());
 
-        System.out.println("\nDISTORTION FOR CLUSTER 1");
-        System.out.println(KDefinition.distortionOfCluster(clusters[1], patterns));
-        System.out.println(KDefinition.sumOfDistortions(clusters, patterns, 1));
-        System.out.println(KDefinition.evaluationFunction(clusters, patterns, 1));
+        for (Cluster c : newClusters) {
+          //  log.info(" Unique initialized cluster  " + c.getLabel() + "  With Center : " + Arrays.toString(c.getCenter()));
+        }
 
-        System.out.println("\nDISTORTION FOR CLUSTER 2");
-        System.out.println(KDefinition.distortionOfCluster(clusters[2], patterns));
-        System.out.println(KDefinition.sumOfDistortions(clusters, patterns, 2));
-        System.out.println(KDefinition.evaluationFunction(clusters, patterns, 2));
-//        List<Cluster> nclusters = createNewClusters();
-//        System.out.println("Number of new clusters based on the StringPattern: " + nclusters.size());
+        log.info("Running merge Center Algorithm for Initial Cluster Centers...");
+
+        mergeCenters.merge(newClusters, this.getK());
+
     }
 
-    /***
-     * The kmeans algorithm that uses Patterns and Clusters <br>
+
+    /**
      * 1. For each Pattern find the closest cluster<br>
      * 2. Add the ith value of the Pattern and find the new mean from the closest cluster's ith center<br>
      * 3. Set the new mean as the new ith center of the cluster<br>
@@ -176,14 +186,20 @@ public class Main {
                 }
             }
         }
+        int i = 0;
+        for (Cluster c : clusters) {
+
+            log.info("Cluster  " + i + " with Center at " + Arrays.toString(c.getCenter()));
+            i++;
+        }
     }
 
-    public List<Cluster> createNewClusters() {
+    public ArrayList<Cluster> createUniqueClusters() {
         Map<String, Cluster> newClusters = new HashMap<String, Cluster>();
         int count = 0;
         for (Pattern pattern : patterns) {
             if (!newClusters.containsKey(Arrays.toString(pattern.getStringPattern()))) {
-//                System.out.println("\nPattern: " + Arrays.toString(pattern.getAttributes()));
+
                 Cluster cluster = new Cluster(count, pattern.getSize());
                 cluster.setCenter(pattern.getAttributes());
                 newClusters.put(Arrays.toString(pattern.getStringPattern()), cluster);
@@ -197,10 +213,12 @@ public class Main {
             }
         }
 
-        System.out.println("\nUnique Patterns:");
-        for (Map.Entry<String, Cluster> entry : newClusters.entrySet()) {
-            System.out.println(entry.getKey() + ": " + Arrays.toString(entry.getValue().getCenter()));
-        }
+        //  log.info("\n Unique  Cluster Patterns:");
+//
+        //      for (Map.Entry<String, Cluster> entry : newClusters.entrySet()) {
+        //        System.out.println(entry.getKey() + ": " + Arrays.toString(entry.getValue().getCenter()));
+        //  }
+
         return new ArrayList<Cluster>(newClusters.values());
     }
 
@@ -222,6 +240,8 @@ public class Main {
     }
 
     public void loadPatterns(String file, String delimeter, String[] attributesPosition, int classnamePosition) throws IOException {
+
+        log.info("Loading  Pattern  values...");
         BufferedReader br = new BufferedReader(new FileReader(file));
         for (String line; (line = br.readLine()) != null; ) {
             String[] attributes = line.split(delimeter);
@@ -230,15 +250,34 @@ public class Main {
                 try {
                     pattern.setValue(i, Double.parseDouble(attributes[Integer.parseInt(attributesPosition[i])]));
                 } catch (java.lang.NumberFormatException ex) {
-                    System.out.println(ex.getMessage());
-                    System.out.println(Arrays.toString(attributes));
+                    log.error(ex.toString());
+                    log.error(Arrays.toString(attributes));
                 }
             }
             pattern.setClassname(attributes[classnamePosition]);
 
             patterns.add(pattern);
+
         }
         br.close();
+    }
+
+    public void evaluate() {
+        log.info("*************************************************************************************");
+
+        log.info("***********************************EVALUATION*****************************************");
+
+        log.info("*************************************************************************************");
+        log.info("\n");
+        log.info("Cluster dissimilarities:");
+        for (int i = 0; i < size; i++) {
+            System.out.println("++++++Attribute " + i + "++++++");
+            System.out.println("Average Dissimilarity : " +KDefinition.averageDissimilarity(clusters[0], patterns, i));
+
+            System.out.println("Lowest Average Dissimilarity : " +KDefinition.lowestAverageDissimilarity(clusters, patterns, i));
+            System.out.println("Silhouette : "+ KDefinition.silhouette(clusters, patterns, i, 0));
+            System.out.println("\n");
+        }
     }
 
     public int getSize() {

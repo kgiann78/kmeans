@@ -1,9 +1,7 @@
-package com.constantine.yet.another.algorithm;
+package com.constantine.kmeans;
 
-import com.constantine.model.Pattern;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -14,6 +12,8 @@ public class Cluster {
     private int label = 0;
     private double[] center;
     private int size = 0;
+
+    private String[][] classnames;
 
     public Cluster(int label, int size) {
         this.label = label;
@@ -41,6 +41,7 @@ public class Cluster {
     public double getCenter(int pos) {
         return center[pos];
     }
+
     public void setCenter(double[] center) {
         this.center = center;
     }
@@ -60,8 +61,10 @@ public class Cluster {
     @Override
     public String toString() {
         return "Cluster{" +
-                label +
-                ": " + Arrays.toString(center) +
-                "}";
+                "label=" + label +
+                ", center=" + Arrays.toString(center) +
+                ", size=" + size +
+                ", classnames=" + Arrays.toString(classnames) +
+                '}';
     }
 }

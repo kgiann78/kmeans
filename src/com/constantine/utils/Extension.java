@@ -1,15 +1,11 @@
 package com.constantine.utils;
 
-import com.constantine.model.Cluster;
-import com.constantine.model.Pattern;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 public class Extension {
@@ -81,7 +77,7 @@ public class Extension {
     public double calculateCenter(double[] points) {
         return mean(points);
     }
-
+/*
     public List<Double>[] createPartitions(ArrayList<Pattern> patterns, int attr, double[] xs) {
         int k = xs.length;
         List<Double>[] partitions = new List[k];
@@ -112,7 +108,7 @@ public class Extension {
         }
 
         return partitions;
-    }
+    }*/
 
 
     public Properties readPropertiesFile(String fileName) throws IOException {

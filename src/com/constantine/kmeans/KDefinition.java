@@ -1,11 +1,9 @@
-package com.constantine.algorithm;
+package com.constantine.kmeans;
 
-import com.constantine.yet.another.algorithm.Cluster;
-import com.constantine.yet.another.algorithm.Pattern;
+import com.constantine.kmeans.Cluster;
+import com.constantine.kmeans.Pattern;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class KDefinition {
     public static int ruleOfThumb(int dataPoints) {

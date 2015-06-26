@@ -1,4 +1,4 @@
-package com.constantine.yet.another.algorithm;
+package com.constantine.kmeans;
 
 import com.constantine.utils.Extension;
 import org.apache.log4j.Logger;
@@ -27,12 +27,12 @@ public class Pattern {
         this.attributes = new double[size];
     }
 
-    /***
+    /**
      * Arranges the value of a Pattern's attribute to a cluster, according to
      * the euclidean distance from the closest cluster's center
-     * @param centers the set of centers of the clusters that corresponding to the selected attribute
-     * @param pos the specific attribute that is to be examined
      *
+     * @param centers the set of centers of the clusters that corresponding to the selected attribute
+     * @param pos     the specific attribute that is to be examined
      * @return true if an arrangement took place, false if nothing changed
      */
     public int arrangePattern(double[] centers, int pos) {
@@ -57,6 +57,8 @@ public class Pattern {
 
         return getCluster(pos);
     }
+
+
 
     public int[] getStringPattern() {
         return stringPattern;
