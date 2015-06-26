@@ -1,9 +1,5 @@
-package com.constantine.algorithm;
+package com.constantine.kmeans;
 
-import com.constantine.model.Cluster;
-import com.constantine.model.Pattern;
-import com.constantine.utils.Extension;
-import com.constantine.utils.Utils;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -11,14 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by envy17 j110ea on 29/5/2015.
+ * Created by envy17 j110ea on 29/5/2015
  */
 public class Stats {
     private Logger log = Logger.getLogger(this.getClass());
-    private Utils utils = new Utils();
-    private Extension extension = new Extension();
 
-    public void printLabels(ArrayList<Cluster> clusters, ArrayList<Pattern> patterns) {
+
+    public void printLabels(Cluster[] clusters, ArrayList<Pattern> patterns) {
         log.info("\n");
 
         log.info("*************************************************************************************");
@@ -27,60 +22,47 @@ public class Stats {
 
         log.info("*************************************************************************************");
         log.info("\n");
-        log.info("Final Cluster Centers : ");
 
-        int varNumber = clusters.get(0).getVarNum();
 
-        int K = clusters.size();
-        for (Cluster cluster : clusters) {
-            log.info(utils.printString(cluster.getCenter()));
-            cluster.clear();
+        int varNumber = patterns.get(1).getSize();
+
+        int K = clusters.length;
+
+        ArrayList<HashMap<String, Integer>> counters = new ArrayList<HashMap<String, Integer>>();
+
+        for (int k = 0; k < K; k++) {
+            counters.add(new HashMap<String, Integer>());
         }
 
         log.info("\n");
         for (int j = 0; j < varNumber; j++) {
 
-
             log.info("For Attribute " + j);
-
             for (int k = 0; k < K; k++) {
                 for (Pattern pattern : patterns) {
-                    if (pattern.getLabelValue(j) == k) {
-                        clusters.get(k).addPattern(pattern);
-
+                    if (pattern.getStringPattern()[j] == k) {
+                        if (counters.get(k).containsKey(pattern.getClassname())) {
+                            counters.get(k).put(pattern.getClassname(), counters.get(k).get(pattern.getClassname()) + 1);
+                        } else {
+                            counters.get(k).put(pattern.getClassname(), 1);
+                        }
                     }
 
                 }
-
-
             }
 
-
+            int k = 0;
             for (Cluster c : clusters) {
-                log.info("Cluster INFO : ");
+
                 log.info("Cluster Label " + c.getLabel());
-                log.info("Cluster members " + c.getMembers());
 
-                HashMap<String, Integer> diffValues = new HashMap<String, Integer>();
-
-                for (Pattern p : c.getPatterns()) {
-
-
-                    if (diffValues.containsKey(p.getClassname())) {
-                        int count = diffValues.get(p.getClassname());
-                        diffValues.put(p.getClassname(), count + 1);
-
-                    } else {
-                        diffValues.put(p.getClassname(), 1);
-                    }
-                }
 
                 log.info("Members Class Type ");
 
-
                 Integer max = 0;
                 String maxClass = null;
-                for (Map.Entry<String, Integer> e : diffValues.entrySet()) {
+                int clusterMembers = 0;
+                for (Map.Entry<String, Integer> e : counters.get(k).entrySet()) {
                     log.info(e.getKey() + ": " + e.getValue());
 
                     if (e.getValue() > max) {
@@ -88,28 +70,27 @@ public class Stats {
                         maxClass = e.getKey();
                     }
 
+                    clusterMembers += e.getValue();
                 }
 
-                Double percentage = (Double.valueOf(max) / Double.valueOf(c.getMembers())) * 100;
+
+                Double percentage = (Double.valueOf(max) / Double.valueOf(clusterMembers)) * 100;
                 log.info("Prevalent Classname : " + maxClass + " for " + Double.toString(percentage) + "%");
                 log.info("Assigned Cluster Classname: " + maxClass);
                 log.info("\n");
 
-
+                k++;
             }
 
-            for (Cluster cluster : clusters) {
-                cluster.clear();
-            }
 
         }
 
 
     }
+    /*
 
     public void computeError(ArrayList<Cluster> clusters, ArrayList<Pattern> patterns) {
         int varNumber = clusters.get(0).getVarNum();
-
         for (int j = 0; j < varNumber; j++) {
             int wronglyClassifiedPatterns = 0;
             for (Pattern pattern : patterns) {
@@ -130,7 +111,10 @@ public class Stats {
 
                 }
             }
+
             log.info("Wrongly classified  " + wronglyClassifiedPatterns);
         }
     }
+*/
+
 }
