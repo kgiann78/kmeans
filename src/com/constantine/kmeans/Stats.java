@@ -28,16 +28,18 @@ public class Stats {
 
         int K = clusters.length;
 
-        ArrayList<HashMap<String, Integer>> counters = new ArrayList<HashMap<String, Integer>>();
-
-        for (int k = 0; k < K; k++) {
-            counters.add(new HashMap<String, Integer>());
-        }
 
         log.info("\n");
         for (int j = 0; j < varNumber; j++) {
 
             log.info("For Attribute " + j);
+
+            ArrayList<HashMap<String, Integer>> counters = new ArrayList<HashMap<String, Integer>>();
+
+            for (int k = 0; k < K; k++) {
+                counters.add(new HashMap<String, Integer>());
+            }
+
             for (int k = 0; k < K; k++) {
                 for (Pattern pattern : patterns) {
                     if (pattern.getStringPattern()[j] == k) {
