@@ -65,7 +65,7 @@ public class Stats {
                 String maxClass = null;
                 int clusterMembers = 0;
                 for (Map.Entry<String, Integer> e : counters.get(k).entrySet()) {
-                    log.info(e.getKey() + ": " + e.getValue());
+//                    log.info(e.getKey() + ": " + e.getValue());
 
                     if (e.getValue() > max) {
                         max = e.getValue();

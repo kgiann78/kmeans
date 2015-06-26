@@ -49,12 +49,10 @@ public class Main {
             log.info("Runing kmeans with CCIA centers...");
             main.kmeans();
 
-
             main.stats.printLabels(main.getClusters(), (ArrayList<Pattern>) main.getPatterns());
 
             log.info("Evaluating...");
             main.evaluate();
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -277,6 +275,12 @@ public class Main {
             System.out.println("Lowest Average Dissimilarity : " +KDefinition.lowestAverageDissimilarity(clusters, patterns, i));
             System.out.println("Silhouette : "+ KDefinition.silhouette(clusters, patterns, i, 0));
             System.out.println("\n");
+        }
+
+        for (int i = 0 ; i < patterns.get(0).getSize(); i++) {
+            System.out.println("Attribute " + i);
+            System.out.println("F(k) = " + KDefinition.evaluationFunction(clusters, patterns, k, i));
+            System.out.println();
         }
     }
 

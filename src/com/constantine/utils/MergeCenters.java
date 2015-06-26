@@ -33,9 +33,9 @@ public class MergeCenters {
         while (kCounter < K || clusters.size() > K) {
 
             LinkedHashMap<Integer, ArrayList<Cluster>> mergedCenters = new LinkedHashMap<Integer, ArrayList<Cluster>>();
-            int q = rand.nextInt(clusters.size() - 1) + 1;
+//            int q = rand.nextInt(clusters.size() - 1) + 1;
 
-            q = clusters.size() - 1;
+            int q = clusters.size() - 1;
 
             int l = 1;
             while (!clusters.isEmpty()) {
